@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Rabbit · Cinematic Friendship</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ----- reset & base ----- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0a0a;
+      color: #f0ece4;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    ::-webkit-scrollbar { width: 4px; background: #111; }
+    ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 8px; }
+
+    /* ----- glassmorphism & gold ----- */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(212,175,55,0.04);
+      padding: 2.5rem 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 60px rgba(212,175,55,0.08);
+    }
+    .gold-text { color: #d4af37; text-shadow: 0 0 30px rgba(212, 175, 55, 0.25); }
+    .gold-border { border-color: #d4af37; }
+    .btn-3d {
+      display: inline-block;
+      padding: 14px 40px;
+      background: linear-gradient(145deg, #d4af37, #b8962e);
+      border: none;
+      border-radius: 60px;
+      color: #0a0a0a;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-size: 1rem;
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      transform: perspective(800px) rotateX(0deg) translateZ(0);
+    }
+    .btn-3d:hover {
+      transform: perspective(800px) rotateX(4deg) translateZ(16px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(212, 175, 55, 0.4);
+      background: linear-gradient(145deg, #e4c04a, #c49f32);
+    }
+
+    /* ----- netflix intro overlay ----- */
+    #intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    #intro-overlay.active { opacity: 1; pointer-events: auto; }
+    #intro-overlay .intro-line {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      color: #d4af37;
+      font-size: clamp(1.2rem, 4vw, 2.8rem);
+      letter-spacing: 6px;
+      opacity: 0;
+      text-shadow: 0 0 40px rgba(212,175,55,0.2);
+      margin: 0.3rem 0;
+      text-align: center;
+    }
+
+    /* ----- hero section ----- */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-image-frame {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      padding: 10px;
+      background: radial-gradient(circle at 30% 20%, #d4af37, #6b5a1e);
+      box-shadow: 0 0 80px rgba(212, 175, 55, 0.25), 0 0 160px rgba(212,175,55,0.08);
+      animation: floatImage 5s ease-in-out infinite;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .hero-image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+      border: 4px solid #0a0a0a;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+    }
+    @keyframes floatImage {
+      0% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-14px) scale(1.02); }
+      100% { transform: translateY(0px) scale(1); }
+    }
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: clamp(3.2rem, 12vw, 6.5rem);
+      letter-spacing: 8px;
+      color: #d4af37;
+      text-shadow: 0 0 60px rgba(212,175,55,0.2);
+      margin: 0.5rem 0;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.6rem);
+      font-weight: 300;
+      max-width: 700px;
+      text-align: center;
+      color: #d0c8b8;
+      letter-spacing: 2px;
+    }
+
+    /* ----- sections ----- */
+    .section {
+      padding: 5rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #d4af37;
+      text-shadow: 0 0 30px rgba(212,175,55,0.08);
+    }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+
+    /* gallery */
+    .gallery-item {
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+      border: 1px solid rgba(212,175,55,0.08);
+      aspect-ratio: 4/3;
+      background: #111;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease, filter 0.5s ease;
+    }
+    .gallery-item:hover { transform: scale(1.03) translateY(-6px); }
+    .gallery-item:hover img { transform: scale(1.12); filter: brightness(1.1) contrast(1.05); }
+
+    /* timeline */
+    .timeline-item {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      border-left: 2px solid #d4af37;
+      padding-left: 2rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '✦';
+      position: absolute;
+      left: -14px;
+      top: 0;
+      color: #d4af37;
+      font-size: 1.4rem;
+      background: #0a0a0a;
+      padding: 0 6px;
+    }
+    .timeline-year {
+      font-family: 'Cinzel', serif;
+      color: #d4af37;
+      font-weight: 700;
+      font-size: 1.4rem;
+      min-width: 70px;
+    }
+
+    /* reply section */
+    .reply-form input, .reply-form textarea {
+      width: 100%;
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(212,175,55,0.15);
+      border-radius: 30px;
+      color: #f0ece4;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      transition: 0.3s;
+      margin-bottom: 1rem;
+      outline: none;
+    }
+    .reply-form input:focus, .reply-form textarea:focus {
+      border-color: #d4af37;
+      box-shadow: 0 0 20px rgba(212,175,55,0.05);
+    }
+    .reply-form textarea { min-height: 120px; resize: vertical; }
+
+    /* stored replies */
+    .reply-item {
+      background: rgba(255,255,255,0.02);
+      border-radius: 20px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 3px solid #d4af37;
+    }
+    .reply-item strong { color: #d4af37; font-family: 'Cinzel', serif; }
+
+    /* footer */
+    .footer {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      border-top: 1px solid rgba(212,175,55,0.08);
+      color: #8a847a;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+    .footer i { color: #d4af37; }
+
+    /* mouse glow */
+    #mouse-glow {
+      position: fixed;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      transition: opacity 0.2s;
+      will-change: transform, left, top;
+    }
+
+    /* particles canvas */
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* music toggle */
+    #music-toggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+      background: rgba(10,10,10,0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 50%;
+      width: 54px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    #music-toggle:hover { background: rgba(212,175,55,0.12); transform: scale(1.05); }
+
+    /* responsive */
+    @media (max-width: 640px) {
+      .hero-image-frame { width: 200px; height: 200px; }
+      .glass-card { padding: 1.8rem 1.2rem; }
+      .timeline-item { padding-left: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- intro overlay -->
+<div id="intro-overlay" class="active">
+  <div class="intro-line" id="intro-line1">Every story has a beginning...</div>
+  <div class="intro-line" id="intro-line2">Some friendships arrive when you least expect them...</div>
+  <div class="intro-line" id="intro-line3">Ours began in 2026.</div>
+</div>
+
+<!-- mouse glow -->
+<div id="mouse-glow"></div>
+
+<!-- particles canvas -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- main content -->
+<main style="position: relative; z-index: 2;">
+
+  <!-- Hero -->
+  <section class="hero-section" id="hero">
+    <div class="hero-image-frame" data-speed="0.2">
+      <img src="https://i.postimg.cc/prrZw6cX/Screenshot-20260719-142614.jpg" alt="Rabbit" />
+    </div>
+    <h1 class="hero-title">Aymaa</h1>
+    <p class="hero-sub gold-text" style="font-family: 'Cinzel', serif; font-weight: 400; letter-spacing: 4px; margin-bottom: 0.6rem;">
+      Some people become unforgettable from the moment they walk into your life.
+    </p>
+    <div style="margin-top: 2rem;">
+      <button class="btn-3d" onclick="document.getElementById('timeline').scrollIntoView({behavior:'smooth'})">
+        <i class="fas fa-play" style="margin-right: 10px;"></i> Begin Journey
+      </button>
+    </div>
+  </section>
+
+  <!-- Friendship Timeline (starts 2026) -->
+  <section class="section" id="timeline">
+    <h2 class="section-title">✦ Friendship Timeline</h2>
+    <div style="max-width: 700px; margin: 0 auto;">
+      <div class="timeline-item"><span class="timeline-year">2026</span><div><strong style="color:#d4af37;">We met as friends</strong><br/><span style="color:#b0a898;">The beginning of an amazing friendship.</span></div></div>
+      <div class="timeline-item"><span class="timeline-year">2026</span><div><strong style="color:#d4af37;">Shared conversations</strong><br/><span style="color:#b0a898;">Late nights, endless laughter, and stories that felt like home.</span></div></div>
+      <div class="timeline-item"><span class="timeline-year">2026</span><div><strong style="color:#d4af37;">Funny moments</strong><br/><span style="color:#b0a898;">Inside jokes, silly faces, and the kind of joy that leaves you breathless.</span></div></div>
+      <div class="timeline-item"><span class="timeline-year">2026</span><div><strong style="color:#d4af37;">New memories</strong><br/><span style="color:#b0a898;">Every day added a new chapter to our story.</span></div></div>
+      <div class="timeline-item"><span class="timeline-year">2026+</span><div><strong style="color:#d4af37;">More adventures waiting ahead...</strong><br/><span style="color:#b0a898;">The best is yet to come.</span></div></div>
+    </div>
+  </section>
+
+  <!-- Why You're Amazing -->
+  <section class="section" id="reasons">
+    <h2 class="section-title">✦ Why You're Amazing</h2>
+    <div class="grid-3">
+      <div class="glass-card" style="text-align:center;"><i class="fas fa-crown" style="color:#d4af37; font-size:2.4rem;"></i><h4 style="color:#d4af37; margin:0.6rem 0;">Grace</h4><p style="color:#b0a898;">You carry elegance in every step.</p></div>
+      <div class="glass-card" style="text-align:center;"><i class="fas fa-smile" style="color:#d4af37; font-size:2.4rem;"></i><h4 style="color:#d4af37; margin:0.6rem 0;">Warmth</h4><p style="color:#b0a898;">Your smile lights up every room.</p></div>
+      <div class="glass-card" style="text-align:center;"><i class="fas fa-gem" style="color:#d4af37; font-size:2.4rem;"></i><h4 style="color:#d4af37; margin:0.6rem 0;">Strength</h4><p style="color:#b0a898;">Resilient, kind, and unshakable.</p></div>
+      <div class="glass-card" style="text-align:center;"><i class="fas fa-feather-alt" style="color:#d4af37; font-size:2.4rem;"></i><h4 style="color:#d4af37; margin:0.6rem 0;">Creativity</h4><p style="color:#b0a898;">You see beauty where others see ordinary.</p></div>
+      <div class="glass-card" style="text-align:center;"><i class="fas fa-hand-holding-heart" style="color:#d4af37; font-size:2.4rem;"></i><h4 style="color:#d4af37; margin:0.6rem 0;">Empathy</h4><p style="color:#b0a898;">You listen, you care, you uplift.</p></div>
+      <div class="glass-card" style="text-align:center;"><i class="fas fa-star" style="color:#d4af37; font-size:2.4rem;"></i><h4 style="color:#d4af37; margin:0.6rem 0;">Radiance</h4><p style="color:#b0a898;">A rare soul that leaves a mark.</p></div>
+    </div>
+  </section>
+
+  <!-- Memories Gallery -->
+  <section class="section" id="gallery">
+    <h2 class="section-title">✦ Memories Gallery</h2>
+    <div class="grid-2" style="max-width: 800px; margin: 0 auto;">
+      <div class="gallery-item"><img src="https://i.postimg.cc/prrZw6cX/Screenshot-20260719-142614.jpg" alt="Memory 1" /></div>
+      <div class="gallery-item"><img src="https://i.postimg.cc/prrZw6cX/Screenshot-20260719-142614.jpg" alt="Memory 2" /></div>
+      <div class="gallery-item"><img src="https://i.postimg.cc/prrZw6cX/Screenshot-20260719-142614.jpg" alt="Memory 3" /></div>
+      <div class="gallery-item"><img src="https://i.postimg.cc/prrZw6cX/Screenshot-20260719-142614.jpg" alt="Memory 4" /></div>
+    </div>
+  </section>
+
+  <!-- Interactive Reply Section (Rabbit) -->
+  <section class="section" id="reply">
+    <h2 class="section-title">💬 Leave a Reply for Rabbit</h2>
+    <div class="glass-card" style="max-width: 700px; margin: 0 auto;">
+      <form class="reply-form" id="replyForm">
+        <input type="text" id="replyName" placeholder="Your name (Rabbit 🐰)" required />
+        <textarea id="replyMessage" placeholder="Write your message for Rabbit..." required></textarea>
+        <button type="submit" class="btn-3d" style="width:100%; justify-content:center; display:flex; align-items:center; gap:10px;">
+          <i class="fas fa-paper-plane"></i> Send Reply
+        </button>
+      </form>
+      <div id="replySuccess" style="display:none; margin-top:1.5rem; padding:1rem; background:rgba(212,175,55,0.08); border-radius:20px; border:1px solid #d4af37; text-align:center; color:#d4af37; font-family:'Cinzel',serif;">
+        Thank you, Rabbit! Your message has been received. 🐰
+      </div>
+      <div id="repliesList" style="margin-top:2rem;"></div>
+    </div>
+  </section>
+
+  <!-- Final Message -->
+  <section class="section" id="final" style="text-align:center;">
+    <div class="glass-card" style="max-width: 700px; margin: 0 auto;">
+      <i class="fas fa-crown" style="color:#d4af37; font-size:3rem;"></i>
+      <h2 style="font-family:'Cinzel',serif; color:#d4af37; margin:1rem 0;">Thank You, Rabbit</h2>
+      <p style="color:#cbc3b0; font-size:1.2rem; line-height:2;">
+        for being such a wonderful friend. Here's to making many more memories together.
+      </p>
+      <div style="margin-top:1.8rem;">
+        <span style="font-family:'Cinzel',serif; color:#d4af37; letter-spacing:4px;">— Atif</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    Made with <i class="fas fa-heart"></i> by Atif
+    <br/><span style="font-size:0.8rem; opacity:0.5;">✦ always cherish the golden moments ✦</span>
+  </footer>
+</main>
+
+<!-- music toggle -->
+<div id="music-toggle"><i class="fas fa-music"></i></div>
+
+<!-- GSAP & Canvas Confetti -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+
+<script>
+  (function() {
+    // ----- intro sequence -----
+    const intro = document.getElementById('intro-overlay');
+    const line1 = document.getElementById('intro-line1');
+    const line2 = document.getElementById('intro-line2');
+    const line3 = document.getElementById('intro-line3');
+
+    gsap.set([line1, line2, line3], { opacity: 0, y: 30 });
+    const tlIntro = gsap.timeline({ delay: 0.4 });
+    tlIntro.to(line1, { opacity: 1, y: 0, duration: 1.6, ease: 'power2.out' })
+      .to(line1, { opacity: 0, y: -20, duration: 1.2, delay: 1.6, ease: 'power2.in' })
+      .to(line2, { opacity: 1, y: 0, duration: 1.6, ease: 'power2.out' }, '+=0.4')
+      .to(line2, { opacity: 0, y: -20, duration: 1.2, delay: 1.8, ease: 'power2.in' })
+      .to(line3, { opacity: 1, y: 0, duration: 1.6, ease: 'power2.out' }, '+=0.4')
+      .to(line3, { opacity: 0, y: -20, duration: 1.2, delay: 1.8, ease: 'power2.in' })
+      .to(intro, { opacity: 0, duration: 1.2, ease: 'power2.out', onComplete: () => {
+        intro.classList.remove('active');
+        intro.style.display = 'none';
+        launchFireworks();
+        startConfetti();
+        // grand ending fireworks after scroll
+      }});
+
+    // ----- audio (ambient pad) -----
+    let audioCtx = null, gainNode = null, isMuted = false, audioStarted = false;
+    function initAudio() {
+      if (audioStarted) return;
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.2;
+        gainNode.connect(audioCtx.destination);
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        gain2.gain.value = 0.1;
+        osc1.type = 'sine'; osc1.frequency.value = 180;
+        osc2.type = 'sine'; osc2.frequency.value = 270;
+        osc1.connect(gainNode);
+        osc2.connect(gain2);
+        gain2.connect(gainNode);
+        osc1.start(0); osc2.start(0);
+        audioStarted = true;
+      } catch(e) { console.log('audio init error', e); }
+    }
+    function toggleMute() {
+      if (!audioCtx) { initAudio(); return; }
+      isMuted = !isMuted;
+      if (gainNode) gainNode.gain.value = isMuted ? 0 : 0.2;
+      document.querySelector('#music-toggle i').className = isMuted ? 'fas fa-volume-mute' : 'fas fa-music';
+    }
+    document.getElementById('music-toggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!audioStarted) initAudio();
+      toggleMute();
+    });
+    document.addEventListener('click', () => { if (!audioStarted) initAudio(); }, { once: true });
+    document.addEventListener('touchstart', () => { if (!audioStarted) initAudio(); }, { once: true });
+
+    // ----- mouse glow -----
+    const glow = document.getElementById('mouse-glow');
+    document.addEventListener('mousemove', (e) => {
+      gsap.to(glow, { left: e.clientX, top: e.clientY, duration: 0.5, ease: 'power2.out' });
+    });
+    document.addEventListener('touchmove', () => { glow.style.opacity = '0'; });
+    document.addEventListener('touchstart', () => { glow.style.opacity = '0'; });
+
+    // ----- particles -----
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth, height = window.innerHeight;
+    let particles = [];
+    function resizeCanvas() {
+      width = window.innerWidth; height = window.innerHeight;
+      canvas.width = width; canvas.height = height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 2.6 + 0.8;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.2;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        this.color = Math.random() > 0.6 ? `rgba(212,175,55,` : `rgba(255,255,255,`;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > width) this.speedX *= -1;
+        if (this.y < 0 || this.y > height) this.speedY *= -1;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.fillStyle = this.color + this.opacity + ')';
+        ctx.fill();
+      }
+    }
+    for (let i=0; i<90; i++) particles.push(new Particle());
+    function animateParticles() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ----- scroll reveal (GSAP) -----
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.utils.toArray('.glass-card, .gallery-item, .timeline-item, .hero-image-frame, .hero-title, .hero-sub').forEach(el => {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, toggleActions: 'play none none none', start: 'top 85%' },
+        y: 50,
+        opacity: 0,
+        duration: 1.1,
+        ease: 'power2.out',
+        stagger: 0.06
+      });
+    });
+    gsap.to('.hero-image-frame', {
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 },
+      y: -80,
+      scale: 0.96,
+      opacity: 0.7,
+      ease: 'none'
+    });
+
+    // ----- fireworks & confetti -----
+    function launchFireworks() {
+      const duration = 4 * 1000;
+      const end = Date.now() + duration;
+      (function frame() {
+        if (Date.now() > end) return;
+        confetti({ particleCount: 3, startVelocity: 35, spread: 70, origin: { y: 0.6, x: Math.random() * 0.8 + 0.1 }, colors: ['#d4af37', '#ffffff', '#ffb347', '#f5e56b'] });
+        requestAnimationFrame(frame);
+      })();
+    }
+    let confettiInterval = null;
+    function startConfetti() {
+      if (confettiInterval) clearInterval(confettiInterval);
+      confettiInterval = setInterval(() => {
+        confetti({ particleCount: 12, spread: 60, origin: { y: 0.5, x: Math.random() * 0.8 + 0.1 }, colors: ['#d4af37', '#ffffff', '#f5c842', '#fff5d0'], startVelocity: 20, gravity: 0.8 });
+      }, 500);
+      setTimeout(() => { if (confettiInterval) clearInterval(confettiInterval); }, 8000);
+    }
+    // grand ending: fireworks + hearts on footer scroll
+    const footerTrigger = ScrollTrigger.create({
+      trigger: '#footer',
+      start: 'top 80%',
+      once: true,
+      onEnter: () => {
+        launchFireworks();
+        startConfetti();
+        // floating hearts with confetti
+        for (let i=0; i<30; i++) {
+          setTimeout(() => {
+            confetti({ particleCount: 2, spread: 40, origin: { y: 0.8, x: Math.random() }, colors: ['#ff6b81', '#ff4757', '#ff2f5e'] });
+          }, i * 80);
+        }
+      }
+    });
+
+    // ----- reply system (localStorage) -----
+    const form = document.getElementById('replyForm');
+    const successDiv = document.getElementById('replySuccess');
+    const repliesList = document.getElementById('repliesList');
+
+    function loadReplies() {
+      const data = JSON.parse(localStorage.getItem('rabbitReplies') || '[]');
+      repliesList.innerHTML = data.map(r => 
+        `<div class="reply-item"><strong>🐰 ${r.name}</strong><br/><span style="color:#d0c8b8;">${r.message}</span></div>`
+      ).join('');
+    }
+    loadReplies();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('replyName').value.trim() || 'Rabbit';
+      const message = document.getElementById('replyMessage').value.trim();
+      if (!message) return;
+      const replies = JSON.parse(localStorage.getItem('rabbitReplies') || '[]');
+      replies.push({ name, message, date: new Date().toISOString() });
+      localStorage.setItem('rabbitReplies', JSON.stringify(replies));
+      loadReplies();
+      successDiv.style.display = 'block';
+      setTimeout(() => { successDiv.style.display = 'none'; }, 4000);
+      form.reset();
+      // success animation
+      confetti({ particleCount: 30, spread: 80, origin: { y: 0.3 } });
+    });
+
+    // gallery hover firework (fun)
+    document.querySelectorAll('.gallery-item').forEach(el => {
+      el.addEventListener('mouseenter', () => { launchFireworks(); });
+    });
+
+    console.log('✨ Rabbit · cinematic friendship tribute by Atif');
+  })();
+</script>
+</body>
+</html>
